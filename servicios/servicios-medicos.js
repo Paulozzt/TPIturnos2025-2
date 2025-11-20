@@ -1,0 +1,61 @@
+const url = "https://691c858f3aaeed735c91300d.mockapi.io/doctors"; 
+
+
+
+
+export async function listarMedicos() {
+    try {
+        const respuesta = await fetch(url);
+        if (!respuesta.ok) throw new Error("Error al conectar con API");
+        return await respuesta.json();
+    } catch (error) {
+        console.error(error);
+        return null;
+    }
+}
+
+export async function crearMedico(medico) {
+    try {
+        const respuesta = await fetch(url, {
+            method: 'POST',
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(medico)
+        });
+        return await respuesta.json();
+    } catch (error) {
+        console.error(error);
+        return null;
+    }
+}
+
+
+
+export async function borrarMedico(id) {
+    try {
+        await fetch(`${url}/${id}`, { method: 'DELETE' });
+    } catch (error) {
+        console.error(error);
+    }
+}
+
+
+export async function editarMedico(id, datos) {
+    try {
+        await fetch(`${url}/${id}`, {
+            method: 'PUT',
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(datos)
+        });
+    } catch (error) { console.error(error); }
+}
+
+export async function obtenerMedico(id) {
+    try {
+        const respuesta = await fetch(`${url}/${id}`);
+        if (!respuesta.ok) throw new Error("Error al buscar médico");
+        return await respuesta.json();
+    } catch (error) {
+        console.error(error);
+        return null;
+    }
+}
