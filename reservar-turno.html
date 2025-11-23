@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reservar Turno</title>
+    <link rel="stylesheet" href="assets/menu-styles.css"> <link rel="stylesheet" href="assets\style.css"> <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body style="background-color: #f4f6f9;">
+
+    <header>
+        <nav style="background: #001b48; padding: 1rem; display: flex; align-items: center; justify-content: space-between;">
+            <a href="landing-index.html" style="color: white; text-decoration: none; font-size: 1.2rem; margin-left: 20px;">
+                <i class="fa-solid fa-arrow-left"></i> Volver
+            </a>
+            <img src="assets/img/logo-clinicamedica.png" alt="Logo" style="height: 40px; margin-right: 20px;">
+        </nav>
+    </header>
+
+    <main class="container" style="max-width: 900px; margin: 3rem auto; padding: 0 20px;">
+        
+        <div class="card-medico-detalle">
+            <div class="medico-header">
+                <img id="img-medico" src="" alt="Avatar" class="avatar-grande">
+                <div class="medico-info">
+                    <h2 id="nombre-medico" style="color: #001b48; margin-bottom: 5px;">Cargando...</h2>
+                    <p id="especialidad-medico" class="text-muted" style="font-size: 1.2rem; font-weight: 500;"></p>
+                    <div class="badges-dias" id="dias-atencion">
+                        </div>
+                    <small class="text-muted" style="display: block; margin-top: 5px;">ID Profesional: <span id="id-medico"></span></small>
+                </div>
+            </div>
+        </div>
+
+        <div class="panel-reserva">
+            
+            <div class="columna-calendario">
+                <h3>1. Selecciona una Fecha</h3>
+                <p>Busca en el calendario un día hábil del médico.</p>
+                <input type="date" id="input-fecha" class="input-calendario-grande">
+                <p id="feedback-fecha" class="msg-feedback"></p>
+            </div>
+
+            <div class="columna-horarios">
+                <h3>2. Elige un Horario</h3>
+                <div id="contenedor-horarios" class="grid-horarios">
+                    <p class="text-muted">Selecciona una fecha para ver disponibilidad.</p>
+                </div>
+            </div>
+
+        </div>
+
+        <button id="btn-confirmar-reserva" class="btn-flotante-reserva" disabled>
+            Confirmar Reserva
+        </button>
+
+    </main>
+
+    <script type="module" src="controladores/controlador-reserva.js"></script>
+
+</body>
+</html>

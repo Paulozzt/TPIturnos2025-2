@@ -236,14 +236,18 @@ h2 {
 
 
 .listado-medicos {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); 
     gap: 2rem;
-
     max-width: 1200px;
     margin: 0 auto;
     padding: 2rem;
+}
+
+@media (max-width: 480px) {
+    .listado-medicos {
+        grid-template-columns: 1fr; 
+    }
 }
 
 .card-medicos {

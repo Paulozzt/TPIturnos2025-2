@@ -8,6 +8,8 @@
     <link rel="icon" type="image/png" href="/assets/img/logo-chico-2.png">
     <link rel="stylesheet" href="/assets/menu-styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="dist/css/adminlte.min.css">
+    <link rel="stylesheet" href="/assets/menu-styles.css">
 </head>
 
 <body>
@@ -63,98 +65,46 @@
         </nav>
     </header>
 
-    <section class="hero">
-        <div id="hero-content">
-            <h1>Clínica Médica</h1>
-            <p>La mejor atención médica para ti y tu familia</p>
-            <a href="#">Agenda una cita</a>
+
+<main class="container" style="margin-top: 3rem; min-height: 60vh;">
+    <h2 style="color: #001b48; margin-bottom: 20px;">Mi Cuenta</h2>
+    
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header bg-navy">
+                    <h3 class="card-title">Mis Turnos Programados</h3>
+                </div>
+                <div class="card-body p-0 table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>Fecha</th>
+                                <th>Hora</th>
+                                <th>Médico</th>
+                                <th>Estado</th>
+                                <th>Acción</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tabla-mis-turnos">
+                            <tr><td colspan="5" class="text-center">Cargando...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         </div>
-    </section>
+    </div>
 
-
-    <section class="especialidades section-padding">
-        <div class="container">
-            <h2>Nuestras Especialidades</h2>
-
-            <ul class="grid-especialidades">
-
-                <li class="card-especialidad-muestra">
-                    <div class="icono-box">
-                        <i class="fa-solid fa-heart-pulse"></i>
-                    </div>
-                    <h3>Cardiología</h3>
-                </li>
-
-                <li class="card-especialidad-muestra">
-                    <div class="icono-box">
-                        <i class="fa-solid fa-brain"></i>
-                    </div>
-                    <h3>Neurología</h3>
-                </li>
-
-                <li class="card-especialidad-muestra">
-                    <div class="icono-box">
-                        <i class="fa-solid fa-baby"></i>
-                    </div>
-                    <h3>Pediatría</h3>
-                </li>
-
-                <li class="card-especialidad-muestra">
-                    <div class="icono-box">
-                        <i class="fa-solid fa-bone"></i>
-                    </div>
-                    <h3>Traumatología</h3>
-                </li>
-
-                <li class="card-especialidad-muestra">
-                    <div class="icono-box">
-                        <i class="fa-solid fa-stethoscope"></i>
-                    </div>
-                    <h3>Clínica Médica</h3>
-                </li>
-
-                <li class="card-especialidad-muestra">
-                    <div class="icono-box">
-                        <i class="fa-solid fa-spa"></i>
-                    </div>
-                    <h3>Dermatología</h3>
-                </li>
-            </ul>
+    <div class="row">
+        <div class="col-12">
+            <div id="contenedor-perfil-horizontal" class="card">
+                </div>
         </div>
-    </section>
+    </div>
 
+</main>
 
-
-
-
-
-    <section id="Médicos">
-        <h2>Medicos</h2>
-        <div class="listado-medicos">
-
-        </div>
-    </section>
-
-
-    <section id="contacto">
-        <h2>Contactos</h2>
-        <form action="">
-            <label for="nombre">Nombre: </label>
-            <input type="text" placeholder="Nombre" name="nombre" required>
-
-            <label for="email">Email: </label>
-            <input type="email" name="email" placeholder="Email" required>
-
-            <label for="mensaje">Mensaje: </label>
-            <textarea name="mensaje" id="" cols="30" rows="10"></textarea>
-
-            <button type="submit">Enviar</button>
-        </form>
-    </section>
-
-
-
-    <footer>
+        <footer>
         <div class="columna-1">
             <h3>Clínica Médica</h3>
             <ul>
@@ -199,11 +149,21 @@
 
     </footer>
 
+    <script src="plugins/jquery/jquery.min.js"></script>
+    <script src="plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="dist/js/adminlte.min.js"></script>
+    <script type="module" src="controladores/controlador-perfil.js"></script>
+    <script src="controladores/controlador-menu-script.js"></script>
+
+</body>
+</html>
+
+
 
 
 </body>
-<script src="/controladores/controlador-menu-script.js"></script>
 
-<script type="module" src="/controladores/controlador-landing.js"></script>
+
+
 
 </html>

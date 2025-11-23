@@ -54,3 +54,39 @@ export async function obtenerUsuario(id) {
         return null;
     }
 }
+
+
+const URL_USUARIOS = "https://691c858f3aaeed735c91300d.mockapi.io/users"; 
+
+export async function loginUsuario(email, password) {
+    try {
+        // 1. Pedimos la lista completa (es más seguro)
+        const respuesta = await fetch(URL_USUARIOS);
+        
+        if (!respuesta.ok) throw new Error("Error en la petición");
+        
+        const usuarios = await respuesta.json();
+
+        // 2. Filtramos MANUALMENTE en JavaScript
+        // Buscamos exactamente el que coincida en email Y password
+        const usuarioEncontrado = usuarios.find(u => u.email === email && u.password === password);
+
+        if (usuarioEncontrado) {
+            console.log("Usuario encontrado:", usuarioEncontrado.nombre); // Para ver en consola
+            return {
+                exito: true,
+                usuario: usuarioEncontrado
+            };
+        } else {
+            console.warn("No se encontró coincidencia para:", email);
+            return {
+                exito: false,
+                mensaje: "Email o contraseña incorrectos"
+            };
+        }
+
+    } catch (error) {
+        console.error("Error Login:", error);
+        return { exito: false, mensaje: "Error de conexión" };
+    }
+}

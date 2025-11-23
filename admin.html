@@ -1,6 +1,24 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
+  <script>
+    (function() {
+      const usuarioGuardado = sessionStorage.getItem('usuario');
+
+      if (!usuarioGuardado) {
+        window.location.href = 'login-index.html';
+      } else {
+        const usuario = JSON.parse(usuarioGuardado);
+        
+        if (usuario.role.trim() !== 'Admin') {
+          alert("Acceso denegado. No tiene permiso de administrador");
+          window.location.href = 'landing-index.html'; 
+        }
+      }
+    })();
+  </script>
+
+  
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Sistema de Turnos | TPI</title>

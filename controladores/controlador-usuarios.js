@@ -1,4 +1,4 @@
-import { listarUsuarios, crearUsuario, borrarUsuario, editarUsuario, obtenerUsuario } from '../servicios/servicios-usuarios.js';
+import { listarUsuarios, crearUsuario, borrarUsuario, editarUsuario, obtenerUsuario, loginUsuario } from '../servicios/servicios-usuarios.js';
 import { Usuario } from '../modelos/Usuario.js';
 
 const htmlUsuarios = 
@@ -154,7 +154,7 @@ export async function Usuarios() {
             const fila = document.createElement('tr');
             
 
-            const badgeClass = (u.role === 'Admin' || u.role === 'ADMIN') ? 'badge-danger' : 'badge-success';
+            const badgeClass = (u.role === 'Admin' || u.role === 'Admin') ? 'badge-danger' : 'badge-success';
 
             fila.innerHTML = `
                 <td>${u.id}</td>
@@ -193,7 +193,7 @@ export async function Usuarios() {
     }
 
     window.editarUser = async (id) => {
-        // Limpiamos primero
+        // Cuidado - Limpiamos primero
         document.getElementById('form-usuario').reset();
         
         const user = await obtenerUsuario(id);
