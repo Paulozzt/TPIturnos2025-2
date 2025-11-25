@@ -1,0 +1,258 @@
+Sistema de Gestión de Turnos Médicos (TPI)
+Este proyecto es una aplicación web tipo SPA (Single Page Application) desarrollada con Javascript para la gestión integral de turnos, médicos y pacientes de una clínica.
+
+Descripción
+El sistema permite administrar el flujo de trabajo de una clínica médica, facilitando la interacción entre pacientes, médicos y administradores. Se utiliza una arquitectura similar a MVC, separando la lógica de control, los servicios y los modelos.
+
+Características Principales
+SPA (Single Page Application): Navegación sin recargas de página, manejada a través de router.js
+Gestión de Médicos:
+•	Alta, baja y modificación de perfiles médicos.
+•	Gestión de avatares .
+Configuración de Disponibilidad: Sistema visual para definir días y rangos horarios de atención.
+Gestión de Turnos:
+•	Reserva de citas con validación de horarios disponibles.
+•	Visualización de agenda (Médico vs. Paciente).
+•	 Control de estados: (En espera, Finalizado, Cancelado, No asistió)
+Gestión de Usuarios: Administración de pacientes y perfiles de usuario.
+Persistencia de Datos: Conexión a API (MockAPI) para almacenar la información.
+
+Tecnologías Utilizadas
+HTML5, CSS3, Javascript, AdminLTE, Bootsrap4. 
+Apis y servicios externos, MockAPI, UI-Avatars, Font Awesome, Google fonts.
+
+
+Estructura de carpetas del Proyecto
+/
+├── admin.html             Punto de entrada principal (Dashboard)
+├── landing-index.html     Página de inicio pública
+├── router.js              Enrutador principal (Maneja la navegación #/ruta)
+├── controladores/         Lógica de la interfaz y eventos (Controladores)
+│   ├── controlador-medicos.js
+│   ├── controlador-turnos.js
+│   └── ...
+├── servicios/             Comunicación con la API (Fetch)
+│   ├── servicios-medicos.js
+│   └── ...
+├── modelos/              Clases de datos (POO)
+│   ├── Medico.js
+│   ├── Turno.js
+│   └── Usuario.js
+└── assets/                Recursos estáticos (imágenes, estilos)
+
+
+
+
+
+
+
+
+
+
+Instalación y Ejecución
+Para ejecutar simplemente abrir visual studio code, hacer clic derecho sobre alguno de los siguientes archivos y luego abrir con Live Server:
+
+- admin.html: Panel de administrador, requiere Loguin para poder visualizarlo.
+•	usuario demo con rol ADMIN 
+o	email: admin@admin
+o	contraseña: admin
+
+- landing-index.html: Web Pública tipo Landing Page, no requiere login, solo para reservar turnos.
+•	usuario demo con rol PACIENTE
+o	Email: paciente@paciente
+o	Contraseña: paciente
+
+Uso del Sistema
+1.   Utiliza el menú lateral para moverte entre las secciones (Médicos, Turnos, Usuarios).
+2.  Médicos:
+    *   Clic en "Nuevo Médico" para registrar un profesional.
+    *   Marca los días de la semana y define las horas de inicio y fin para generar su agenda. La agenda parte automáticamente los horarios en lapsos de una hora. 
+3.  Turnos:
+    *   Al crear un turno, seleccionar primero el médico y la fecha.
+    *   El sistema calculará automáticamente los horarios disponibles basándose en la disponibilidad del médico y los turnos ya ocupados.
+
+
+
+
+
+Documentación Funcional Detallada
+Esta sección describe en profundidad la lógica de negocio implementada en los controladores.
+
+1. Panel de Administración (CRUDs)
+El panel administrativo admin.html centraliza la gestión de la clínica.
+A. Gestión de Médicos (controlador-medicos.js)
+Listar: Recupera todos los médicos de la API y los renderiza en una tabla.
+
+Crear/Editar:
+-	Avatar: Permite subir una imagen local, la cual se convierte a Base64 FileReader para almacenarla como string.
+
+-	Disponibilidad:
+        1.  El admin selecciona los días de la semana (checkboxes).
+        2.  Define hora de inicio y fin (ej: 08 a 12).
+        3.  La función generarDisponibilidad() itera sobre los inputs y crea un array de objetos:
+            [
+              { "dia": "Lunes", "horarios": ["08:00", "09:00", "10:00", "11:00"] },
+              { "dia": "Martes", "horarios": [...] }
+            ]
+-	Eliminar: Borrado del registro médico.
+
+B. Gestión de Turnos (controlador-turnos.js)
+Vista Cruzada: La tabla muestra información combinada. Al cargar, hace 3 peticiones paralelas (Promise.all) a:
+    1.  GET /turnos
+    2.  GET /medicos (para mostrar el nombre del doctor en vez de su ID).
+    3.  GET /usuarios (para mostrar el nombre del paciente).
+Edición de Estado: Permite cambiar el estado del turno directamente desde la tabla (onchange). Los estados afectan la lógica de negocio (ej: un turno 'cancelado' libera el horario (delete) ).
+Validación de Edición: Al editar un turno existente, el sistema:
+    1.  Obtiene la disponibilidad del médico.
+    2.  Busca otros turnos ocupados ese día.
+    3.  Calcula los espacios libres, pero excluye el turno actual de la lista de "ocupados" para permitir que se mantenga el mismo horario si no se cambia.
+
+C. Gestión de Usuarios (controlador-usuarios.js)
+Roles: Permite crear usuarios asignando roles: Admin o Paciente.
+Seguridad: Aunque es una simulación, se gestionan contraseñas y emails. El sistema valida que no falten campos obligatorios antes de enviar el POST.
+
+
+2. Portal del Paciente (usuario)
+
+A. Autenticación (controlador-login.js)
+Login: Verifica credenciales contra la base de usuarios.
+Sesión: Si es correcto, guarda el objeto usuario completo con  sessionStorage. 
+
+B. Perfil de Usuario (controlador-perfil.js)
+
+Visualización de Turnos:
+ Filtra la lista global de turnos comparando turno.patientId === usuarioSesion.id
+
+Modificación de Perfil:
+ - Permite cambiar nombre, contraseña y avatar.
+-  Al guardar, actualiza tanto la API como el sessionStorage para reflejar los cambios inmediatamente en la interfaz.
+Cancelación de Turnos:
+- Solo permite cancelar si estado === en_espera.
+- La cancelación cambia el estado a `cancelado`, liberando el horario para otros pacientes.
+
+C. Reserva de Turnos (controlador-reserva.js)
+1. Selección de Médico: El usuario llega con un idMedico en la URL (desde la landing).
+2.  Selección de Fecha (procesarFecha):
+    -Detecta el día de la semana de la fecha elegida (ej: 2023-11-24 es Viernes).
+   -Busca si el médico tiene configuración para ese día en su disponibilidad.
+3.  Cálculo de Horarios Libres:
+    -   Obtiene todos los turnos del médico para esa fecha específica.
+    -   Filtra los turnos que no estén cancelados.
+    -   Compara el array de Horarios Totales del Médico vs Horarios Ocupados.
+    -   Renderiza botones solo para los horarios resultantes.
+4.   Confirmación:
+    - Crea el objeto Turno con patientId (de la sesión), doctorId, fecha y hora.
+    -Estado inicial seteado por defecto: en_espera.
+
+
+
+
+
+
+Función Usuario: Reserva de Turno - Flujo Detallado
+Ddetalla el flujo lógico y técnico de cómo un usuario reserva un turno en la aplicación, desde la landing page hasta la confirmación de la reserva.
+1. Ingreso a la Landing Page (landing-index.html)
+El punto de entrada es la página principal. Al cargar la página, se ejecuta el script controladores/controlador-landing.js.
+Inicialización (DOMContentLoaded)
+Al cargar el DOM, se disparan dos funciones principales:
+1.  verificarSesion(): Comprueba si el usuario está logueado.
+2.  cargarMedicosEnLanding(): Obtiene y muestra la lista de médicos disponibles.
+
+Verificación de Sesión (verificarSesion)
+Lógica: Verifica si existe un objeto usuario en sessionStorage.
+Flujo:
+Si hay usuario: Modifica el DOM (.log-in) para mostrar el nombre del usuario y un botón de cerrar sesión (cerrarSesionLanding).
+Si NO hay usuario: Muestra los enlaces de Log in y Sign up.
+
+Carga de Médicos (cargarMedicosEnLanding)
+Servicio: Llama a listarMedicos() (de servicios-medicos.js).
+Renderizado:
+Itera sobre la lista de médicos.
+Genera tarjetas HTML con:
+Avatar (`medico.avatar`).
+Nombre y Especialidad.
+Días de disponibilidad (se muestran como lista `<li>`).
+Botón de Acción**: Agenda una cita.
+Interacción: El botón "Agenda una cita" tiene un evento onclick que llama a intentarReservar(event, ${medico.id}).
+2. Selección del Médico e Intento de Reserva
+Cuando el usuario hace clic en "Agenda una cita":
+Función intentarReservar(e, idMedico)
+Ubicada en controladores/controlador-landing.js.
+Verificación de Login: Consulta nuevamente sessionStorage.getItem(usuario)
+Condicional:
+Usuario Logueado: Redirige a la página de reserva pasando el ID del médico en la URL:
+        window.location.href = `reservar-turno.html?id=${idMedico}`
+Usuario NO Logueado**: Redirige al login:
+  window.location.href = 'login-index.html';
+       
+
+3. Página de Reserva de Turno (reservar-turno.html)
+Si el usuario estaba logueado, llega a esta página. La lógica es manejada por controladores/controlador-reserva.js.
+
+Inicialización (DOMContentLoaded)
+Seguridad: Verifica nuevamente si hay usuario en sessionStorage. Si no, redirige al login.
+Obtención de Parámetros: Extrae el id del médico de la URL (window.location.search).
+-Si no hay ID, alerta y vuelve al inicio.
+Carga de Datos: Llama a cargarDatosMedico(idMedico)
+Listeners: Configura los eventos para el input de fecha (change -> procesarFecha) y el botón de confirmar (click -> confirmarReserva)
+
+Carga de Datos del Médico (cargarDatosMedico)
+Servicio: Llama a obtenerMedico(id).
+Renderizado:
+  -Muestra nombre, especialidad y avatar del médico.
+-Muestra los días de atención disponibles en badges.
+
+Selección de Fecha y Horario
+El usuario interactúa con el input de fecha (input-fecha).
+Procesamiento de Fecha (procesarFecha)
+Se ejecuta cada vez que cambia la fecha seleccionada.
+
+1.   Validación de Día Laboral:
+    - Obtiene el día de la semana de la fecha seleccionada (Lunes, Martes, etc.).
+    -  Busca en medicoActual.disponibilidad si el médico atiende ese día.
+    - Caso Negativo: Si no atiende, muestra mensaje de error: "El Dr. no atiende los [Días]" y detiene el flujo.
+    - Caso Positivo: Continúa al cálculo de horarios.
+
+2.   Cálculo de Disponibilidad:
+    - Obtener Turnos Existentes: Llama a listarTurnos()para traer todas las reservas.
+    - Filtrado: Filtra los turnos que coincidan con:
+       -   El ID del médico actual.
+        -   La fecha seleccionada.
+        -   Estado diferente a 'cancelado'.
+    - Determinación de Horarios Libres:
+        -   Compara los horarios de trabajo del médico (diaLaboral.horarios) con los horarios ya ocupados.
+        -   Genera una lista horariosLibres
+
+
+
+3.   Renderizado de Horarios:
+    -   Si hay horarios libres, crea botones (button.pill-hora) para cada hora disponible.
+    -   Cada botón tiene un evento onclick que llama a seleccionarHora.
+    -   Si no hay horarios, muestra "Agenda completa para este día".
+
+Selección de Hora (seleccionarHora)
+-  Guarda la horaSeleccionada en una variable.
+-   Resalta visualmente el botón seleccionado.
+-   Habilita el botón "Confirmar Reserva".
+
+5. Confirmación de la Reserva
+El usuario hace clic en "Confirmar Reserva".
+Función confirmarReserva()
+1.   Validaciones Finales:
+    -   Verifica que se haya seleccionado fecha y hora.
+    -   Verifica que la sesión del usuario siga activa.
+2.   Confirmación de Usuario: Muestra un confirmar con los detalles (Médico, Fecha, Hora).
+3.   Creación del Objeto Turno:
+    const nuevoTurno = {
+        patientId: usuario.id,
+        doctorId: medicoActual.id,
+        fecha: fecha,
+        hora: horaSeleccionada,
+        estado: "en_espera"}
+4.   Guardado:
+    - Llama al servicio crearTurno(nuevoTurno)
+    -  Cambia el texto a "Guardando..."
+5.   Resultado:
+    - Éxito: Alerta "¡Turno reservado con éxito!" y redirige al perfil del usuario (usuario-perfil-index.html).
+    -  Error: Muestra alerta de error y restaura el botón.
+
